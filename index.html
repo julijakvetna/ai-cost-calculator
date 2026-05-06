@@ -71,11 +71,11 @@
 <div class="container">
 
 <h1>AI Agent Cost Calculator</h1>
-<p class="subtitle">Calculate the real cost of running AI agents \u2014 including the hidden expenses most people forget.</p>
+<p class="subtitle">Calculate the real cost of running AI agents — including the hidden expenses most people forget.</p>
 
 <div class="section">
   <div class="section-title">1. What does your agent do?</div>
-  <div class="section-desc">Pick the closest match \u2014 this sets typical message sizes automatically</div>
+  <div class="section-desc">Pick the closest match — this sets typical message sizes automatically</div>
   <div class="btn-grid cols-3" id="use-cases">
     <button onclick="pickUseCase('email',50,1,800,300)" id="uc-email" class="pick-btn"><span class="label">Email routing</span><br><span class="desc">Read, classify, forward</span></button>
     <button onclick="pickUseCase('content',10,4,2000,1500)" id="uc-content" class="pick-btn"><span class="label">Content creation</span><br><span class="desc">Draft, review, adapt</span></button>
@@ -108,19 +108,19 @@
     <div>
       <label style="display:block; margin-bottom:6px;">What does the AI read each time?</label>
       <div class="btn-grid" id="input-btns">
-        <button onclick="pickInput(400,'short')" id="in-short" class="pick-btn"><span class="label">Short text</span> \u2014 tweet, label <span class="tokens">(~400 tok)</span></button>
-        <button onclick="pickInput(1200,'medium')" id="in-medium" class="pick-btn"><span class="label">Typical email</span> \u2014 a few paragraphs <span class="tokens">(~1,200 tok)</span></button>
-        <button onclick="pickInput(3000,'long')" id="in-long" class="pick-btn"><span class="label">Long document</span> \u2014 report, article <span class="tokens">(~3,000 tok)</span></button>
-        <button onclick="pickInput(6000,'xl')" id="in-xl" class="pick-btn"><span class="label">Full document</span> \u2014 multi-page <span class="tokens">(~6,000 tok)</span></button>
+        <button onclick="pickInput(400,'short')" id="in-short" class="pick-btn"><span class="label">Short text</span> — tweet, label <span class="tokens">(~400 tok)</span></button>
+        <button onclick="pickInput(1200,'medium')" id="in-medium" class="pick-btn"><span class="label">Typical email</span> — a few paragraphs <span class="tokens">(~1,200 tok)</span></button>
+        <button onclick="pickInput(3000,'long')" id="in-long" class="pick-btn"><span class="label">Long document</span> — report, article <span class="tokens">(~3,000 tok)</span></button>
+        <button onclick="pickInput(6000,'xl')" id="in-xl" class="pick-btn"><span class="label">Full document</span> — multi-page <span class="tokens">(~6,000 tok)</span></button>
       </div>
     </div>
     <div>
       <label style="display:block; margin-bottom:6px;">What does the AI produce each time?</label>
       <div class="btn-grid" id="output-btns">
-        <button onclick="pickOutput(100,'tag')" id="out-tag" class="pick-btn"><span class="label">A label</span> \u2014 one word or tag <span class="tokens">(~100 tok)</span></button>
-        <button onclick="pickOutput(400,'reply')" id="out-reply" class="pick-btn"><span class="label">Short reply</span> \u2014 a few sentences <span class="tokens">(~400 tok)</span></button>
-        <button onclick="pickOutput(1200,'draft')" id="out-draft" class="pick-btn"><span class="label">Full draft</span> \u2014 email, post <span class="tokens">(~1,200 tok)</span></button>
-        <button onclick="pickOutput(3000,'article')" id="out-article" class="pick-btn"><span class="label">Long content</span> \u2014 article, report <span class="tokens">(~3,000 tok)</span></button>
+        <button onclick="pickOutput(100,'tag')" id="out-tag" class="pick-btn"><span class="label">A label</span> — one word or tag <span class="tokens">(~100 tok)</span></button>
+        <button onclick="pickOutput(400,'reply')" id="out-reply" class="pick-btn"><span class="label">Short reply</span> — a few sentences <span class="tokens">(~400 tok)</span></button>
+        <button onclick="pickOutput(1200,'draft')" id="out-draft" class="pick-btn"><span class="label">Full draft</span> — email, post <span class="tokens">(~1,200 tok)</span></button>
+        <button onclick="pickOutput(3000,'article')" id="out-article" class="pick-btn"><span class="label">Long content</span> — article, report <span class="tokens">(~3,000 tok)</span></button>
       </div>
     </div>
   </div>
@@ -145,21 +145,21 @@
 
   <div class="multiplier-card">
     <div class="slider-row"><div class="title">Instructions overhead</div><span class="slider-val" id="ctx-out">1.5x</span></div>
-    <div class="explain">Every AI call includes hidden text: the system prompt ("you are an email classifier..."), examples, and retrieval context. Sent with every single call \u2014 adds 30-100% to input size.</div>
+    <div class="explain">Every AI call includes hidden text: the system prompt ("you are an email classifier..."), examples, and retrieval context. Sent with every single call — adds 30-100% to input size.</div>
     <input type="range" min="1.0" max="3.0" step="0.1" value="1.5" id="ctx">
-    <div class="scale-labels"><span>1x \u2014 minimal prompt</span><span>2x \u2014 detailed + examples</span><span>3x \u2014 RAG heavy</span></div>
+    <div class="scale-labels"><span>1x — minimal prompt</span><span>2x — detailed + examples</span><span>3x — RAG heavy</span></div>
   </div>
   <div class="multiplier-card">
     <div class="slider-row"><div class="title">Waste factor</div><span class="slider-val" id="waste-out">2.0x</span></div>
-    <div class="explain">Your agent will process things it shouldn't \u2014 old emails, duplicates, wrong triggers. Month 1: expect 2-3x. After optimization: 1.1-1.3x.</div>
+    <div class="explain">Your agent will process things it shouldn't — old emails, duplicates, wrong triggers. Month 1: expect 2-3x. After optimization: 1.1-1.3x.</div>
     <input type="range" min="1.0" max="5.0" step="0.1" value="2.0" id="waste">
-    <div class="scale-labels"><span>1x \u2014 perfectly tuned</span><span>2x \u2014 typical month 1</span><span>5x \u2014 no filters</span></div>
+    <div class="scale-labels"><span>1x — perfectly tuned</span><span>2x — typical month 1</span><span>5x — no filters</span></div>
   </div>
   <div class="multiplier-card">
     <div class="slider-row"><div class="title">Retry rate</div><span class="slider-val" id="retry-out">1.2x</span></div>
-    <div class="explain">Bad responses, timeouts, validation failures \u2014 each retry costs the same as the original. 1.2x means roughly 1 in 5 calls needs a redo.</div>
+    <div class="explain">Bad responses, timeouts, validation failures — each retry costs the same as the original. 1.2x means roughly 1 in 5 calls needs a redo.</div>
     <input type="range" min="1.0" max="2.0" step="0.1" value="1.2" id="retry">
-    <div class="scale-labels"><span>1x \u2014 no retries</span><span>1.2x \u2014 typical</span><span>2x \u2014 unreliable</span></div>
+    <div class="scale-labels"><span>1x — no retries</span><span>1.2x — typical</span><span>2x — unreliable</span></div>
   </div>
 </div>
 
@@ -197,8 +197,8 @@
 <div class="sanity"><div class="title">Sanity check</div><div class="body" id="sanity"></div></div>
 
 <div class="footer">
-  Built by <a href="#">Julija Kvetna Snagovska</a> \u2014 based on real AI agent deployment experience.<br>
-  Formula: Items/day \u00d7 30 \u00d7 Steps \u00d7 [(Input tokens \u00d7 Context overhead) \u00d7 Input price + Output tokens \u00d7 Output price] \u00d7 Waste \u00d7 Retries + Infrastructure
+  Built by <a href="#">Julija Kvetna Snagovska</a> — based on real AI agent deployment experience.<br>
+  Formula: Items/day × 30 × Steps × [(Input tokens × Context overhead) × Input price + Output tokens × Output price] × Waste × Retries + Infrastructure
 </div>
 
 </div>
@@ -261,12 +261,12 @@ function calc(){
   if(pieChart)pieChart.destroy();
   pieChart=new Chart(document.getElementById('breakdownChart'),{type:'doughnut',data:{labels:pd.map(d=>d.l),datasets:[{data:pd.map(d=>Math.round(d.v*100)/100),backgroundColor:pd.map(d=>d.c),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+': $'+c.parsed.toFixed(2)}}}}});
   let tips=[];
-  if(wp>50)tips.push('Over half your budget goes to waste. Normal for month 1 \u2014 tighten triggers and add dedup logic first.');
+  if(wp>50)tips.push('Over half your budget goes to waste. Normal for month 1 — tighten triggers and add dedup logic first.');
   if(S.steps>=5)tips.push('With '+S.steps+' steps, end-to-end accuracy drops to ~'+Math.round(Math.pow(0.85,S.steps)*100)+'%. Add verification or simplify.');
   if(mReal>500)tips.push('At $'+Math.round(mReal)+'/mo, use a cheap model (Haiku/DeepSeek) for simple steps, expensive only for generation.');
   if(mReal>300)tips.push('Set a daily cost cap of $'+Math.round(total*2)+' to catch runaway issues before they hurt.');
   if(mReal<30&&infra>mReal*0.6)tips.push('Infrastructure costs more than AI. Consider free tiers to balance the ratio.');
-  if(mReal<50)tips.push('Under $50/month \u2014 solid SME budget territory for a well-scoped automation.');
+  if(mReal<50)tips.push('Under $50/month — solid SME budget territory for a well-scoped automation.');
   if(S.inTok>=3000&&S.ctx>=2)tips.push('Large documents + heavy instructions = expensive. Try chunking or a summary-first step.');
   if(!tips.length)tips.push('Looks reasonable. Aim for 3-5x ROI vs. the value this saves you.');
   document.getElementById('sanity').innerHTML=tips.join('<br>');
