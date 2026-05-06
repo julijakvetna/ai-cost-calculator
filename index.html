@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent Cost Calculator for SMEs</title>
+<meta name="description" content="Calculate the real cost of running AI agents — including the hidden expenses most people forget to budget for.">
+<style>
+  :root { --bg: #ffffff; --bg2: #f5f5f4; --bg3: #fafaf9; --text: #1a1a2e; --text2: #57534e; --text3: #a8a29e; --border: rgba(0,0,0,0.1); --accent: #3d5a80; --green: #1D9E75; --red: #E24B4A; --blue: #378ADD; --blue-light: #85B7EB; --gray: #888780; --radius: 10px; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1c1917; --bg2: #292524; --bg3: #1c1917; --text: #e7e5e4; --text2: #a8a29e; --text3: #78716c; --border: rgba(255,255,255,0.1); }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg3); color: var(--text); line-height: 1.5; }
+  .container { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: var(--text2); margin-bottom: 2rem; }
+  .section-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .section-desc { font-size: 13px; color: var(--text3); margin-bottom: 12px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  @media (max-width: 600px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
+  .section { margin-bottom: 2rem; }
+  label { font-size: 13px; color: var(--text2); }
+  .hint { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  input[type="range"] { width: 100%; margin: 6px 0; accent-color: var(--accent); }
+  .slider-row { display: flex; align-items: center; justify-content: space-between; }
+  .slider-val { font-size: 14px; font-weight: 600; min-width: 40px; text-align: right; }
+  .btn-grid { display: grid; gap: 8px; }
+  .btn-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .btn-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 600px) { .btn-grid.cols-3 { grid-template-columns: 1fr; } }
+  .pick-btn { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; cursor: pointer; text-align: left; font-size: 13px; line-height: 1.4; color: var(--text); transition: all 0.15s; }
+  .pick-btn:hover { border-color: var(--accent); }
+  .pick-btn.active { background: rgba(61,90,128,0.08); border-color: var(--accent); }
+  .pick-btn .label { font-weight: 600; }
+  .pick-btn .desc { font-size: 11px; color: var(--text3); }
+  .pick-btn .tokens { font-size: 11px; color: var(--text3); }
+  .multiplier-card { background: var(--bg2); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; }
+  .multiplier-card .title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .multiplier-card .explain { font-size: 12px; color: var(--text2); margin-bottom: 8px; line-height: 1.6; }
+  .scale-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); }
+  .chk-label { display: flex; align-items: flex-start; gap: 10px; padding: 10px; background: var(--bg2); border-radius: var(--radius); cursor: pointer; font-size: 13px; }
+  .chk-label input { margin-top: 3px; }
+  .chk-label .chk-name { font-weight: 600; }
+  .chk-label .chk-desc { font-size: 11px; color: var(--text3); }
+  .results { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 2rem; }
+  .results-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+  .result-box { text-align: center; }
+  .result-box .label { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+  .result-box .value { font-size: 24px; font-weight: 600; }
+  .result-box .hint { font-size: 11px; color: var(--text3); }
+  .result-box.main { background: var(--bg2); border-radius: var(--radius); padding: 14px; }
+  .result-box.main .value { font-size: 30px; }
+  .detail-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 16px; font-size: 13px; color: var(--text2); }
+  .detail-row strong { color: var(--text); }
+  .pie-wrap { position: relative; width: 100%; height: 220px; margin: 1.5rem 0 0.5rem; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--text2); justify-content: center; margin-bottom: 1.5rem; }
+  .legend span { display: flex; align-items: center; gap: 4px; }
+  .legend .dot { width: 10px; height: 10px; border-radius: 2px; }
+  .sanity { background: #E1F5EE; border-radius: var(--radius); padding: 14px; }
+  .sanity .title { font-size: 14px; font-weight: 600; color: #085041; margin-bottom: 6px; }
+  .sanity .body { font-size: 12px; color: #0F6E56; line-height: 1.7; }
+  @media (prefers-color-scheme: dark) { .sanity { background: #04342C; } .sanity .title { color: #5DCAA5; } .sanity .body { color: #9FE1CB; } }
+  .footer { text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 12px; color: var(--text3); }
+  .footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>AI Agent Cost Calculator</h1>
+<p class="subtitle">Calculate the real cost of running AI agents \u2014 including the hidden expenses most people forget.</p>
+
+<div class="section">
+  <div class="section-title">1. What does your agent do?</div>
+  <div class="section-desc">Pick the closest match \u2014 this sets typical message sizes automatically</div>
+  <div class="btn-grid cols-3" id="use-cases">
+    <button onclick="pickUseCase('email',50,1,800,300)" id="uc-email" class="pick-btn"><span class="label">Email routing</span><br><span class="desc">Read, classify, forward</span></button>
+    <button onclick="pickUseCase('content',10,4,2000,1500)" id="uc-content" class="pick-btn"><span class="label">Content creation</span><br><span class="desc">Draft, review, adapt</span></button>
+    <button onclick="pickUseCase('docs',20,2,3000,800)" id="uc-docs" class="pick-btn"><span class="label">Document processing</span><br><span class="desc">Extract, summarize, file</span></button>
+    <button onclick="pickUseCase('support',40,2,1200,600)" id="uc-support" class="pick-btn"><span class="label">Customer support</span><br><span class="desc">Triage tickets, draft replies</span></button>
+    <button onclick="pickUseCase('knowledge',30,3,2500,500)" id="uc-knowledge" class="pick-btn"><span class="label">Knowledge mgmt</span><br><span class="desc">Ingest, tag, deduplicate</span></button>
+    <button onclick="pickUseCase('data',25,2,1500,400)" id="uc-data" class="pick-btn"><span class="label">Data analysis</span><br><span class="desc">Parse, compare, flag</span></button>
+  </div>
+</div>
+
+<div class="section">
+  <div class="grid-2">
+    <div>
+      <div class="slider-row"><label>How many items per day?</label><span class="slider-val" id="items-out">50</span></div>
+      <input type="range" min="5" max="500" step="5" value="50" id="items">
+      <div class="hint">Emails, documents, tickets, posts</div>
+    </div>
+    <div>
+      <div class="slider-row"><label>How complex is the workflow?</label><span class="slider-val" id="steps-out">1 step</span></div>
+      <input type="range" min="1" max="10" step="1" value="1" id="steps">
+      <div class="hint" id="steps-hint">1 step = one AI call (e.g. classify)</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">2. How much text does the AI read and write?</div>
+  <div class="section-desc">Longer text = more cost. ~1 token = 0.75 words. A typical email is ~1,000-1,500 tokens.</div>
+  <div class="grid-2" style="gap: 16px;">
+    <div>
+      <label style="display:block; margin-bottom:6px;">What does the AI read each time?</label>
+      <div class="btn-grid" id="input-btns">
+        <button onclick="pickInput(400,'short')" id="in-short" class="pick-btn"><span class="label">Short text</span> \u2014 tweet, label <span class="tokens">(~400 tok)</span></button>
+        <button onclick="pickInput(1200,'medium')" id="in-medium" class="pick-btn"><span class="label">Typical email</span> \u2014 a few paragraphs <span class="tokens">(~1,200 tok)</span></button>
+        <button onclick="pickInput(3000,'long')" id="in-long" class="pick-btn"><span class="label">Long document</span> \u2014 report, article <span class="tokens">(~3,000 tok)</span></button>
+        <button onclick="pickInput(6000,'xl')" id="in-xl" class="pick-btn"><span class="label">Full document</span> \u2014 multi-page <span class="tokens">(~6,000 tok)</span></button>
+      </div>
+    </div>
+    <div>
+      <label style="display:block; margin-bottom:6px;">What does the AI produce each time?</label>
+      <div class="btn-grid" id="output-btns">
+        <button onclick="pickOutput(100,'tag')" id="out-tag" class="pick-btn"><span class="label">A label</span> \u2014 one word or tag <span class="tokens">(~100 tok)</span></button>
+        <button onclick="pickOutput(400,'reply')" id="out-reply" class="pick-btn"><span class="label">Short reply</span> \u2014 a few sentences <span class="tokens">(~400 tok)</span></button>
+        <button onclick="pickOutput(1200,'draft')" id="out-draft" class="pick-btn"><span class="label">Full draft</span> \u2014 email, post <span class="tokens">(~1,200 tok)</span></button>
+        <button onclick="pickOutput(3000,'article')" id="out-article" class="pick-btn"><span class="label">Long content</span> \u2014 article, report <span class="tokens">(~3,000 tok)</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">3. Which AI model?</div>
+  <div class="section-desc">Cheap models for simple tasks, smart models for complex work.</div>
+  <div class="btn-grid cols-3" id="model-btns">
+    <button onclick="setModel(0.25,1.25,'haiku')" id="m-haiku" class="pick-btn"><span class="label">Haiku 3.5</span><br><span class="desc">Cheapest. Fast. Tagging.</span></button>
+    <button onclick="setModel(0.27,1.10,'deepseek')" id="m-deepseek" class="pick-btn"><span class="label">DeepSeek V3</span><br><span class="desc">Very cheap. Code & data.</span></button>
+    <button onclick="setModel(2.5,10.0,'4omini')" id="m-4omini" class="pick-btn"><span class="label">GPT-4o mini</span><br><span class="desc">Mid-range all-rounder.</span></button>
+    <button onclick="setModel(3.0,15.0,'sonnet')" id="m-sonnet" class="pick-btn"><span class="label">Sonnet 4</span><br><span class="desc">Best value for quality.</span></button>
+    <button onclick="setModel(5.0,15.0,'4o')" id="m-4o" class="pick-btn"><span class="label">GPT-4o</span><br><span class="desc">Premium reasoning.</span></button>
+    <button onclick="setModel(15.0,75.0,'opus')" id="m-opus" class="pick-btn"><span class="label">Opus 4</span><br><span class="desc">Top intelligence. Expensive.</span></button>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">4. The reality tax</div>
+  <div class="section-desc">Your theoretical cost is never the real cost. These three things inflate every AI project.</div>
+
+  <div class="multiplier-card">
+    <div class="slider-row"><div class="title">Instructions overhead</div><span class="slider-val" id="ctx-out">1.5x</span></div>
+    <div class="explain">Every AI call includes hidden text: the system prompt ("you are an email classifier..."), examples, and retrieval context. Sent with every single call \u2014 adds 30-100% to input size.</div>
+    <input type="range" min="1.0" max="3.0" step="0.1" value="1.5" id="ctx">
+    <div class="scale-labels"><span>1x \u2014 minimal prompt</span><span>2x \u2014 detailed + examples</span><span>3x \u2014 RAG heavy</span></div>
+  </div>
+  <div class="multiplier-card">
+    <div class="slider-row"><div class="title">Waste factor</div><span class="slider-val" id="waste-out">2.0x</span></div>
+    <div class="explain">Your agent will process things it shouldn't \u2014 old emails, duplicates, wrong triggers. Month 1: expect 2-3x. After optimization: 1.1-1.3x.</div>
+    <input type="range" min="1.0" max="5.0" step="0.1" value="2.0" id="waste">
+    <div class="scale-labels"><span>1x \u2014 perfectly tuned</span><span>2x \u2014 typical month 1</span><span>5x \u2014 no filters</span></div>
+  </div>
+  <div class="multiplier-card">
+    <div class="slider-row"><div class="title">Retry rate</div><span class="slider-val" id="retry-out">1.2x</span></div>
+    <div class="explain">Bad responses, timeouts, validation failures \u2014 each retry costs the same as the original. 1.2x means roughly 1 in 5 calls needs a redo.</div>
+    <input type="range" min="1.0" max="2.0" step="0.1" value="1.2" id="retry">
+    <div class="scale-labels"><span>1x \u2014 no retries</span><span>1.2x \u2014 typical</span><span>2x \u2014 unreliable</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">5. Infrastructure</div>
+  <div class="section-desc">Check what you're using. Monthly platform costs on top of AI.</div>
+  <div class="grid-2" id="infra-checks">
+    <label class="chk-label"><input type="checkbox" id="chk-n8n" onchange="calc()" checked><div><span class="chk-name">n8n / Make / Zapier</span><br><span class="chk-desc">Workflow platform (~$20/mo)</span></div></label>
+    <label class="chk-label"><input type="checkbox" id="chk-db" onchange="calc()"><div><span class="chk-name">Database</span><br><span class="chk-desc">Supabase / Airtable (~$25/mo)</span></div></label>
+    <label class="chk-label"><input type="checkbox" id="chk-vector" onchange="calc()"><div><span class="chk-name">Vector database</span><br><span class="chk-desc">Pinecone / Weaviate (~$20/mo)</span></div></label>
+    <label class="chk-label"><input type="checkbox" id="chk-hosting" onchange="calc()"><div><span class="chk-name">Cloud hosting</span><br><span class="chk-desc">VPS / Railway (~$15/mo)</span></div></label>
+    <label class="chk-label"><input type="checkbox" id="chk-storage" onchange="calc()"><div><span class="chk-name">File storage</span><br><span class="chk-desc">S3 / Drive API (~$5/mo)</span></div></label>
+    <label class="chk-label"><input type="checkbox" id="chk-monitor" onchange="calc()"><div><span class="chk-name">Monitoring</span><br><span class="chk-desc">LangSmith / Helicone (~$20/mo)</span></div></label>
+  </div>
+</div>
+
+<div class="results">
+  <div class="results-title">Your projected monthly cost</div>
+  <div style="display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 12px; margin-bottom: 16px;">
+    <div class="result-box"><div class="label">Best case</div><div class="value" style="color: var(--green);" id="cost-min">$0</div><div class="hint">Everything works perfectly</div></div>
+    <div class="result-box main"><div class="label">Realistic estimate</div><div class="value" id="cost-real">$0</div><div class="hint">With your settings above</div></div>
+    <div class="result-box"><div class="label">First-month worst case</div><div class="value" style="color: var(--red);" id="cost-max">$0</div><div class="hint">Before you find the bugs</div></div>
+  </div>
+  <div class="detail-row">
+    <div>Daily AI spend: <strong id="daily-cost">$0</strong></div>
+    <div>Cost per item: <strong id="per-item">$0</strong></div>
+    <div>Infrastructure: <strong id="infra-total">$0</strong>/mo</div>
+    <div>Money wasted: <strong id="waste-pct" style="color: var(--red);">0%</strong></div>
+  </div>
+</div>
+
+<div class="pie-wrap"><canvas id="breakdownChart"></canvas></div>
+<div class="legend" id="pie-legend"></div>
+
+<div class="sanity"><div class="title">Sanity check</div><div class="body" id="sanity"></div></div>
+
+<div class="footer">
+  Built by <a href="#">Julija Kvetna Snagovska</a> \u2014 based on real AI agent deployment experience.<br>
+  Formula: Items/day \u00d7 30 \u00d7 Steps \u00d7 [(Input tokens \u00d7 Context overhead) \u00d7 Input price + Output tokens \u00d7 Output price] \u00d7 Waste \u00d7 Retries + Infrastructure
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"><\/script>
+<script>
+let pieChart = null;
+let S = { items:50, steps:1, inTok:800, outTok:300, inPrice:3.0, outPrice:15.0, ctx:1.5, waste:2.0, retry:1.2 };
+const infraCosts = {'chk-n8n':20,'chk-db':25,'chk-vector':20,'chk-hosting':15,'chk-storage':5,'chk-monitor':20};
+const fmt = n => { if(n>=1e6) return (n/1e6).toFixed(1)+'M'; if(n>=1e3) return (n/1e3).toFixed(1)+'K'; return Math.round(n).toString(); };
+const fmtD = n => n<0.01?'<$0.01':n<1?'$'+n.toFixed(3):n<10?'$'+n.toFixed(2):'$'+Math.round(n);
+const fmtM = n => n<10?'$'+n.toFixed(2):'$'+Math.round(n);
+
+function hl(cid,aid){document.querySelectorAll('#'+cid+' .pick-btn').forEach(b=>{b.classList.toggle('active',b.id===aid);});}
+function pickUseCase(id,items,steps,inTok,outTok){
+  S.items=items;S.steps=steps;S.inTok=inTok;S.outTok=outTok;
+  document.getElementById('items').value=items;document.getElementById('steps').value=steps;
+  hl('use-cases','uc-'+id);
+  const im={400:'short',1200:'medium',3000:'long',6000:'xl'},om={100:'tag',400:'reply',1200:'draft',3000:'article'};
+  let bi='medium',bd=99999;for(let[k,v]of Object.entries(im))if(Math.abs(inTok-+k)<bd){bd=Math.abs(inTok-+k);bi=v;}
+  let bo='reply',bo2=99999;for(let[k,v]of Object.entries(om))if(Math.abs(outTok-+k)<bo2){bo2=Math.abs(outTok-+k);bo=v;}
+  hl('input-btns','in-'+bi);hl('output-btns','out-'+bo);calc();
+}
+function pickInput(t,id){S.inTok=t;hl('input-btns','in-'+id);calc();}
+function pickOutput(t,id){S.outTok=t;hl('output-btns','out-'+id);calc();}
+function setModel(i,o,id){S.inPrice=i;S.outPrice=o;hl('model-btns','m-'+id);calc();}
+
+function calc(){
+  S.items=+document.getElementById('items').value;
+  S.steps=+document.getElementById('steps').value;
+  S.ctx=+document.getElementById('ctx').value;
+  S.waste=+document.getElementById('waste').value;
+  S.retry=+document.getElementById('retry').value;
+  document.getElementById('items-out').textContent=S.items;
+  const sl=['','1 step','2 steps','3 steps','4 steps','5 steps','6 steps','7 steps','8 steps','9 steps','10 steps'];
+  document.getElementById('steps-out').textContent=sl[S.steps]||S.steps+' steps';
+  const sh={1:'1 step = one AI call (e.g. classify)',2:'2 steps = classify then draft reply',3:'3 steps = extract, analyze, summarize',4:'4 steps = draft, review, revise, format',5:'5+ steps = multi-agent pipeline'};
+  document.getElementById('steps-hint').textContent=sh[Math.min(S.steps,5)];
+  document.getElementById('ctx-out').textContent=S.ctx.toFixed(1)+'x';
+  document.getElementById('waste-out').textContent=S.waste.toFixed(1)+'x';
+  document.getElementById('retry-out').textContent=S.retry.toFixed(1)+'x';
+  let infra=0;Object.keys(infraCosts).forEach(id=>{if(document.getElementById(id).checked)infra+=infraCosts[id];});
+  const base=S.items*S.steps*((S.inTok/1e6)*S.inPrice+(S.outTok/1e6)*S.outPrice);
+  const ctxE=S.items*S.steps*((S.inTok*(S.ctx-1))/1e6)*S.inPrice;
+  const useful=base+ctxE;
+  const wasted=useful*(S.waste-1);
+  const retried=(useful+wasted)*(S.retry-1);
+  const total=useful+wasted+retried;
+  const mMin=base*30+infra,mReal=total*30+infra,mMax=total*1.5*30+infra;
+  const wp=mReal>0?Math.round(((wasted+retried)*30/mReal)*100):0;
+  document.getElementById('cost-min').textContent=fmtM(mMin);
+  document.getElementById('cost-real').textContent=fmtM(mReal);
+  document.getElementById('cost-max').textContent=fmtM(mMax);
+  document.getElementById('daily-cost').textContent=fmtD(total);
+  document.getElementById('per-item').textContent=fmtD(total/Math.max(S.items,1));
+  document.getElementById('infra-total').textContent='$'+infra;
+  document.getElementById('waste-pct').textContent=wp+'%';
+  const pd=[{l:'Useful AI work',v:base*30,c:'#378ADD'},{l:'Instructions overhead',v:ctxE*30,c:'#85B7EB'},{l:'Waste',v:wasted*30,c:'#E24B4A'},{l:'Retries',v:retried*30,c:'#F09595'},{l:'Infrastructure',v:infra,c:'#888780'}].filter(d=>d.v>0.001);
+  document.getElementById('pie-legend').innerHTML=pd.map(d=>{const p=Math.round(d.v/mReal*100);return '<span><span class="dot" style="background:'+d.c+'"></span>'+d.l+' '+p+'%</span>';}).join('');
+  if(pieChart)pieChart.destroy();
+  pieChart=new Chart(document.getElementById('breakdownChart'),{type:'doughnut',data:{labels:pd.map(d=>d.l),datasets:[{data:pd.map(d=>Math.round(d.v*100)/100),backgroundColor:pd.map(d=>d.c),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+': $'+c.parsed.toFixed(2)}}}}});
+  let tips=[];
+  if(wp>50)tips.push('Over half your budget goes to waste. Normal for month 1 \u2014 tighten triggers and add dedup logic first.');
+  if(S.steps>=5)tips.push('With '+S.steps+' steps, end-to-end accuracy drops to ~'+Math.round(Math.pow(0.85,S.steps)*100)+'%. Add verification or simplify.');
+  if(mReal>500)tips.push('At $'+Math.round(mReal)+'/mo, use a cheap model (Haiku/DeepSeek) for simple steps, expensive only for generation.');
+  if(mReal>300)tips.push('Set a daily cost cap of $'+Math.round(total*2)+' to catch runaway issues before they hurt.');
+  if(mReal<30&&infra>mReal*0.6)tips.push('Infrastructure costs more than AI. Consider free tiers to balance the ratio.');
+  if(mReal<50)tips.push('Under $50/month \u2014 solid SME budget territory for a well-scoped automation.');
+  if(S.inTok>=3000&&S.ctx>=2)tips.push('Large documents + heavy instructions = expensive. Try chunking or a summary-first step.');
+  if(!tips.length)tips.push('Looks reasonable. Aim for 3-5x ROI vs. the value this saves you.');
+  document.getElementById('sanity').innerHTML=tips.join('<br>');
+}
+pickUseCase('email',50,1,800,300);setModel(3.0,15.0,'sonnet');pickInput(1200,'medium');pickOutput(400,'reply');
+<\/script>
+</body>
+</html>
